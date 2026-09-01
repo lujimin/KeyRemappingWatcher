@@ -5,7 +5,6 @@ set -euo pipefail
 label="com.local.KeyRemapping"
 script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source_binary="$script_dir/bin/KeyRemappingWatcher"
-source_code="$script_dir/src/KeyRemappingWatcher.m"
 plist_template="$script_dir/resources/com.local.KeyRemapping.plist"
 
 if [[ "$(uname -s)" != "Darwin" ]]; then
@@ -25,7 +24,6 @@ app_dir="$install_home/Library/Application Support/KeyRemapping"
 launch_agents_dir="$install_home/Library/LaunchAgents"
 logs_dir="$install_home/Library/Logs"
 watcher_target="$app_dir/KeyRemappingWatcher"
-source_target="$app_dir/KeyRemappingWatcher.m"
 plist_target="$launch_agents_dir/$label.plist"
 log_target="$logs_dir/KeyRemappingWatcher.log"
 launch_domain="gui/$user_id"
@@ -38,7 +36,7 @@ if [[ ! -f "$source_binary" ]]; then
     /usr/bin/make -C "$script_dir" all
 fi
 
-for required_file in "$source_binary" "$source_code" "$plist_template"; do
+for required_file in "$source_binary" "$plist_template"; do
     if [[ ! -f "$required_file" ]]; then
         echo "错误：项目文件缺失：$required_file" >&2
         exit 1
@@ -65,16 +63,11 @@ cp "$plist_template" "$staged_plist"
 mkdir -p "$app_dir" "$launch_agents_dir" "$logs_dir" "$backup_dir"
 
 had_old_binary=0
-had_old_source=0
 had_old_plist=0
 
 if [[ -f "$watcher_target" ]]; then
     cp -p "$watcher_target" "$backup_dir/KeyRemappingWatcher"
     had_old_binary=1
-fi
-if [[ -f "$source_target" ]]; then
-    cp -p "$source_target" "$backup_dir/KeyRemappingWatcher.m"
-    had_old_source=1
 fi
 if [[ -f "$plist_target" ]]; then
     cp -p "$plist_target" "$backup_dir/$label.plist"
@@ -86,7 +79,6 @@ if [[ "$skip_launch" != "1" ]]; then
 fi
 
 /usr/bin/install -m 0755 "$source_binary" "$watcher_target"
-/usr/bin/install -m 0644 "$source_code" "$source_target"
 /usr/bin/install -m 0644 "$staged_plist" "$plist_target"
 /usr/bin/xattr -d com.apple.quarantine "$watcher_target" 2>/dev/null || true
 /usr/bin/codesign --force --sign - "$watcher_target"
@@ -107,9 +99,6 @@ if ! /bin/launchctl bootstrap "$launch_domain" "$plist_target"; then
     if [[ "$had_old_binary" == "1" ]]; then
         cp -p "$backup_dir/KeyRemappingWatcher" "$watcher_target"
     fi
-    if [[ "$had_old_source" == "1" ]]; then
-        cp -p "$backup_dir/KeyRemappingWatcher.m" "$source_target"
-    fi
     if [[ "$had_old_plist" == "1" ]]; then
         cp -p "$backup_dir/$label.plist" "$plist_target"
         /bin/launchctl bootstrap "$launch_domain" "$plist_target" 2>/dev/null || true
@@ -128,11 +117,10 @@ fi
 echo
 echo "安装成功。"
 echo "程序：$watcher_target"
-echo "源码：$source_target"
 echo "配置：$plist_target"
 echo "日志：$log_target"
 
-if [[ "$had_old_binary" == "1" || "$had_old_source" == "1" || "$had_old_plist" == "1" ]]; then
+if [[ "$had_old_binary" == "1" || "$had_old_plist" == "1" ]]; then
     echo "安装前文件备份：$backup_dir"
 fi
 

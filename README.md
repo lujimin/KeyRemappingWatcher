@@ -17,15 +17,9 @@
 
 程序监听 HID Usage Page 1、Usage 6，也就是标准键盘服务，因此不依赖具体连接方式或厂商。映射本身全局设置 F20 → Fn；内置 Mac 键盘通常不产生 F20，所以不会实际受到影响。
 
-## 一键安装
+## 安装
 
-在 Finder 中双击：
-
-```text
-安装.command
-```
-
-也可以在 Terminal 中运行：
+在 Terminal 中运行：
 
 ```bash
 cd KeyRemappingWatcher
@@ -37,7 +31,7 @@ cd KeyRemappingWatcher
 安装器会动态读取当前用户主目录，因此不会写死用户名。它会：
 
 1. 备份已有配置和程序；
-2. 安装 Universal 2 可执行文件与源码；
+2. 安装 Universal 2 可执行文件；
 3. 根据当前用户路径生成 LaunchAgent；
 4. 对程序进行本机 ad-hoc 签名；
 5. 加载服务并等待首次映射；
@@ -47,14 +41,13 @@ cd KeyRemappingWatcher
 
 ```text
 ~/Library/Application Support/KeyRemapping/KeyRemappingWatcher
-~/Library/Application Support/KeyRemapping/KeyRemappingWatcher.m
 ~/Library/LaunchAgents/com.local.KeyRemapping.plist
 ~/Library/Logs/KeyRemappingWatcher.log
 ```
 
 ## 重装系统
 
-重装系统前保存整个 `KeyRemappingWatcher` 项目目录。重装完成后，直接双击 `安装.command` 即可。用户名发生变化也没关系，安装器会重新生成正确路径。
+重装系统前保存整个 `KeyRemappingWatcher` 项目目录。重装完成后，在 Terminal 中运行 `./install.sh` 即可。用户名发生变化也没关系，安装器会重新生成正确路径。
 
 运行预编译程序不需要 Xcode。只有重新构建时才需要安装 Xcode Command Line Tools。
 
@@ -92,13 +85,7 @@ bin/KeyRemappingWatcher
 
 ## 卸载
 
-在 Finder 中双击：
-
-```text
-卸载.command
-```
-
-或者运行：
+在 Terminal 中运行：
 
 ```bash
 ./uninstall.sh
@@ -121,8 +108,6 @@ KeyRemappingWatcher/
 ├── src/KeyRemappingWatcher.m
 ├── install.sh
 ├── uninstall.sh
-├── 安装.command
-├── 卸载.command
 ├── Makefile
 └── README.md
 ```
