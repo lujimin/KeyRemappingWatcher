@@ -118,7 +118,7 @@ if ! /bin/launchctl bootstrap "$launch_domain" "$plist_target"; then
 fi
 
 echo "LaunchAgent 已加载，等待首次映射……"
-sleep 12
+sleep 2
 
 if ! /bin/launchctl print "$service_target" >/dev/null; then
     echo "错误：LaunchAgent 加载后未保持运行。请检查日志：$log_target" >&2
