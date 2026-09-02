@@ -193,7 +193,7 @@ int main(void) {
                         ScheduleMapping(5.0, @"Mac woke from sleep");
                     }];
 
-        ApplyMapping(@"watcher started");
+        ScheduleMapping(10.0, @"watcher started");
         Log(@"KeyRemappingWatcher started");
         [[NSRunLoop mainRunLoop] run];
 
