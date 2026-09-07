@@ -194,6 +194,10 @@ int main(void) {
                     }];
 
         ScheduleMapping(10.0, @"watcher started");
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, 120 * NSEC_PER_SEC),
+                       dispatch_get_main_queue(), ^{
+            ApplyMapping(@"startup safety retry");
+        });
         Log(@"KeyRemappingWatcher started");
         [[NSRunLoop mainRunLoop] run];
 
