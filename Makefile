@@ -17,7 +17,8 @@ $(TARGET): $(SOURCE)
 verify:
 	plutil -lint resources/com.local.KeyRemapping.plist
 	codesign --verify --verbose=2 $(TARGET)
-	lipo $(TARGET) -verify_arch x86_64 arm64
+	lipo $(TARGET) -verify_arch x86_64
+	lipo $(TARGET) -verify_arch arm64
 
 clean:
 	rm -f $(TARGET)

@@ -85,7 +85,8 @@ fi
 
 /usr/bin/plutil -lint "$plist_target"
 /usr/bin/codesign --verify --verbose=1 "$watcher_target"
-/usr/bin/lipo "$watcher_target" -verify_arch x86_64 arm64
+/usr/bin/lipo "$watcher_target" -verify_arch x86_64
+/usr/bin/lipo "$watcher_target" -verify_arch arm64
 
 if [[ "$skip_launch" == "1" ]]; then
     echo "安装文件验证成功（测试模式未加载 LaunchAgent）。"
